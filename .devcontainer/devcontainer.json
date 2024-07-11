@@ -1,0 +1,14 @@
+{
+	"name": "mixxx-libhelper",
+	"image": "mcr.microsoft.com/devcontainers/rust:1-1-bullseye",
+
+	"customizations": {
+		"vscode": {
+			"settings": {},
+			"extensions": [
+				"rust-lang.rust-analyzer",
+				"streetsidesoftware.code-spell-checker"
+			]
+		}
+	}
+}
