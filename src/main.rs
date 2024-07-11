@@ -1,11 +1,14 @@
+use mixxx_libhelper::mixxxdb;
 use std::env;
 
-fn main() {
+fn main() -> Result<(), Box<dyn std::error::Error>> {
     let args: Vec<String> = env::args().collect();
     let db_path = get_db_path(&args);
 
     // TODO detect whether mixxx is still running and ask to close first
-    
+    mixxxdb::fix_edm_bpm(db_path)?;
+
+    Ok(())
 }
 
 fn get_db_path(args: &[String]) -> &str {
