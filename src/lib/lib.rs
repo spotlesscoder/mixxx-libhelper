@@ -1,16 +1,15 @@
 mod track;
 mod track_categorization;
+mod track_fingerprinting;
 mod track_movement;
 
 pub mod mixxxdb {
     use std::io::{stdin, stdout, Write};
 
-    use id3::Tag;
+    use id3::{Tag, TagLike};
     use std::path::Path;
     
-    use crate::track::Track;
-
-    use crate::track_categorization::genre::genre::is_edm;
+    use crate::{track::track::track::Track, track_categorization::genre::genre::is_edm};
 
     pub fn fix_edm_bpm(mixxx_db_path: &str) -> Result<(), Box<dyn std::error::Error>> {
         let edm_tracks_low_bpm = find_edm_tracks_with_low_bpm(&mixxx_db_path)?;
