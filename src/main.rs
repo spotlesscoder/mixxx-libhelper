@@ -1,14 +1,40 @@
 use mixxx_libhelper::mixxxdb;
+use core::{panic, panicking::panic};
 use std::env;
+
+const COMMAND_DB: &str = "db";
+const COMMAND_LOGFILE : &str = "logfile";
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let args: Vec<String> = env::args().collect();
-    let db_path = get_db_path(&args);
+    let command: &str = get_command(&args);
 
-    // TODO detect whether mixxx is still running and ask to close first
-    mixxxdb::fix_edm_bpm(db_path)?;
+    if(command == COMMAND_DB) {
+      let db_path: &str = get_db_path(&args);
 
+       // TODO detect whether mixxx is still running and ask to close first
+       mixxxdb::fix_edm_bpm(db_path)?;
+    }
     Ok(())
+}
+
+fn get_command(args: &[String]) -> &str {
+    if args.len() < 2 {
+        panic!("Nee")
+    }
+    let valid_commands = vec![COMMAND_DB, COMMAND_LOGFILE];
+    let valid_commands = valid_commands.sort();
+
+    let command = args[2];
+    if !valid_commands.contains(command) {
+        println!("Invalid command: {command}");
+        println!();
+        println!("Valid commands are");
+        for valid_command in valid_commands {
+            println!(valid_command);
+        }
+        panic!()
+    }
 }
 
 fn get_db_path(args: &[String]) -> &str {

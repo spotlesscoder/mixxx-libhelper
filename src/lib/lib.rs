@@ -1,3 +1,4 @@
+mod logfile;
 mod track;
 mod track_categorization;
 mod track_fingerprinting;
