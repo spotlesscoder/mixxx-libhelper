@@ -1,7 +1,9 @@
 {
 	"name": "mixxx-libhelper",
-	"image": "mcr.microsoft.com/devcontainers/rust:1-1-bullseye",
-
+	"dockerComposeFile": "docker-compose.yml",
+	"service": "devcontainer",
+	"workspaceFolder": "/workspace",
+	"shutdownAction": "stopCompose",
 	"customizations": {
 		"vscode": {
 			"settings": {},
@@ -10,5 +12,6 @@
 				"streetsidesoftware.code-spell-checker"
 			]
 		}
-	}
+	},
+	"postCreateCommand": ".devcontainer/postCreateCommand.sh"
 }

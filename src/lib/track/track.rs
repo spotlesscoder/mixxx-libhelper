@@ -2,7 +2,7 @@ pub mod track {
 
     use id3::Tag;
 
- #[derive(Clone, Debug)]
+    #[derive(Clone, Debug)]
     pub struct Track {
         pub id: usize,
         pub bpm: f64,

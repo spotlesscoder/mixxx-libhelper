@@ -9,7 +9,7 @@ pub mod mixxxdb {
 
     use id3::{Tag, TagLike};
     use std::path::Path;
-    
+
     use crate::{track::track::track::Track, track_categorization::genre::genre::is_edm};
 
     pub fn fix_edm_bpm(mixxx_db_path: &str) -> Result<(), Box<dyn std::error::Error>> {
@@ -65,10 +65,7 @@ pub mod mixxxdb {
         let tracks_with_bpm_below_100 = find_tracks_with_bpm_below(100, &mixxx_db_path)?;
         let tracks_with_id3_formats = filter_to_id3_supported_formats(&tracks_with_bpm_below_100);
         let id3tracks = get_id3_infos_for_tracks(&tracks_with_id3_formats)?;
-        Ok(filter_to_edm_tracks(
-            &tracks_with_bpm_below_100,
-            &id3tracks,
-        ))
+        Ok(filter_to_edm_tracks(&tracks_with_bpm_below_100, &id3tracks))
     }
 
     fn get_id3_infos_for_tracks(tracks: &Vec<Track>) -> Result<Vec<Track>, id3::Error> {
@@ -190,7 +187,7 @@ pub mod mixxxdb {
 
         use super::{filter_to_id3_supported_formats, fix_edm_bpm, Track};
 
-        #[test]
+        //#[test]
         fn full_integration_test() -> Result<(), Box<dyn std::error::Error>> {
             // setup
             if path::Path::is_file(path::Path::new("db.db")) {

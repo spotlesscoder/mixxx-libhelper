@@ -1,6 +1,6 @@
 pub mod genre {
 
-     fn is_trance(genre_string: &str) -> bool {
+    fn is_trance(genre_string: &str) -> bool {
         return genre_string.to_lowercase().contains("trance");
     }
 
@@ -9,7 +9,7 @@ pub mod genre {
     }
 
     pub fn is_edm(genre_string: &str) -> bool {
-        return  is_dance(&genre_string) || is_trance(&genre_string);
+        return is_dance(&genre_string) || is_trance(&genre_string);
     }
 
     #[cfg(test)]

@@ -1,40 +1,42 @@
+use core::panic;
 use mixxx_libhelper::mixxxdb;
-use core::{panic, panicking::panic};
 use std::env;
 
 const COMMAND_DB: &str = "db";
-const COMMAND_LOGFILE : &str = "logfile";
+const COMMAND_LOGFILE: &str = "logfile";
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let args: Vec<String> = env::args().collect();
-    let command: &str = get_command(&args);
+    let command: &str = &get_command(&args);
 
-    if(command == COMMAND_DB) {
-      let db_path: &str = get_db_path(&args);
+    if command == COMMAND_DB {
+        let db_path: &str = get_db_path(&args);
 
-       // TODO detect whether mixxx is still running and ask to close first
-       mixxxdb::fix_edm_bpm(db_path)?;
+        // TODO detect whether mixxx is still running and ask to close first
+        mixxxdb::fix_edm_bpm(db_path)?;
     }
     Ok(())
 }
 
-fn get_command(args: &[String]) -> &str {
+fn get_command(args: &[String]) -> String {
     if args.len() < 2 {
         panic!("Nee")
     }
-    let valid_commands = vec![COMMAND_DB, COMMAND_LOGFILE];
-    let valid_commands = valid_commands.sort();
+    let mut valid_commands = vec![COMMAND_DB.to_string(), COMMAND_LOGFILE.to_string()];
+    valid_commands.sort();
 
-    let command = args[2];
-    if !valid_commands.contains(command) {
+    let command = &args[2];
+    if !valid_commands.contains(&command) {
         println!("Invalid command: {command}");
         println!();
         println!("Valid commands are");
         for valid_command in valid_commands {
-            println!(valid_command);
+            println!("{valid_command}");
         }
         panic!()
     }
+
+    command.to_string()
 }
 
 fn get_db_path(args: &[String]) -> &str {

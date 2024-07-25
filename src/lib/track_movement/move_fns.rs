@@ -1,12 +1,17 @@
-
 pub mod movefns {
-    use std::{fs, path::{Path, PathBuf}};
+    use std::{
+        fs,
+        path::{Path, PathBuf},
+    };
 
-    pub fn move_folder(source_path: &str, target_path: &str) -> Result<(), Box<dyn std::error::Error>>   {
+    pub fn move_folder(
+        source_path: &str,
+        target_path: &str,
+    ) -> Result<(), Box<dyn std::error::Error>> {
         // get affected files list
         let source_path = Path::new(&source_path);
         let is_dir = source_path.is_dir();
-        let mut files = vec![];;
+        let mut files = vec![];
         if is_dir {
             let read_dir = fs::read_dir(&source_path)?;
             for file in read_dir {
@@ -14,11 +19,10 @@ pub mod movefns {
                     files.push(file.unwrap().path())
                 }
             }
-        } else 
-            if source_path.is_file() {
+        } else if source_path.is_file() {
             files.push(PathBuf::from(&source_path))
         }
-        
+
         // move files
         for file in files {
             let path = Path::new(file.as_path());
