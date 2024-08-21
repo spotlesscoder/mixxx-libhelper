@@ -1,20 +1,30 @@
 use core::panic;
-use mixxx_libhelper::mixxxdb;
+use mixxx_libhelper::mixxx_db;
+use mixxx_libhelper::mixxx_logfile;
 use std::env;
 
 const COMMAND_DB: &str = "db";
-const COMMAND_LOGFILE: &str = "logfile";
+const COMMAND_LOGFILE: &str = "logfile_anonymize";
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let args: Vec<String> = env::args().collect();
-    let command: &str = &get_command(&args);
+    let command = &get_command(&args);
 
     if command == COMMAND_DB {
-        let db_path: &str = get_db_path(&args);
+        let db_path = get_db_path(&args);
 
         // TODO detect whether mixxx is still running and ask to close first
-        mixxxdb::fix_edm_bpm(db_path)?;
+        mixxx_db::fix_edm_bpm(db_path)?;
     }
+    if command == COMMAND_LOGFILE {
+        let logfile_path = get_logfile_path(&args);
+
+        let logfile_anonymized = mixxx_logfile::anonymize_logfile(&logfile_path);
+        let target_filename = String::from(format!("{}.anonymized", logfile_path));
+        let target_path = std::path::Path::new(&target_filename);
+        std::fs::write(target_path, logfile_anonymized?)?;
+    }
+
     Ok(())
 }
 
@@ -37,6 +47,14 @@ fn get_command(args: &[String]) -> String {
     }
 
     command.to_string()
+}
+
+fn get_logfile_path(args: &[String]) -> &str {
+    if args.len() < 2 {
+        panic!("No log file path provided");
+    }
+
+    return &args[1];
 }
 
 fn get_db_path(args: &[String]) -> &str {

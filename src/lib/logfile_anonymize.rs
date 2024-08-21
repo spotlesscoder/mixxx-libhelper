@@ -5,21 +5,11 @@ pub mod logfile_anonymize {
     use rand::{distributions::Alphanumeric, Rng};
     use regex::Regex;
 
-    pub fn anonymize_logfile(
-        path: &str,
-        args: Vec<String>,
-    ) -> Result<(), Box<dyn std::error::Error>> {
-        let file_path = std::path::Path::new(&path);
-        let file_as_string = std::fs::read_to_string(path)?;
-
-        Ok(())
-    }
-
-    fn anonymize(file_contents: &str) -> Result<String, Box<dyn std::error::Error>> {
+    pub fn anonymize(file_contents: &str) -> Result<String, Box<dyn std::error::Error>> {
         // serial number macOS
         let result = replace(file_contents, "S/N: [A-Z0-9]+", "S/N: [HIDDEN]")?;
         // replace device IDs
-        let result = replace(&result, "", "")?;
+        let result = replace_device_ids(&result)?;
 
         Ok(result)
     }

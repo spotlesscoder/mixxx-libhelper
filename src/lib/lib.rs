@@ -1,16 +1,72 @@
-mod logfile;
+pub mod logfile_anonymize;
 mod track;
 mod track_categorization;
 mod track_fingerprinting;
 mod track_movement;
 
-pub mod mixxxdb {
+pub mod mixxx_logfile {
+    use crate::logfile_anonymize::logfile_anonymize::anonymize;
+
+    pub fn anonymize_logfile(path: &str) -> Result<String, Box<dyn std::error::Error>> {
+        let file_path = std::path::Path::new(&path);
+        let file_as_string = std::fs::read_to_string(file_path)?;
+
+        let res = anonymize(&file_as_string)?;
+        Ok(res)
+    }
+}
+
+pub mod mixxx_db {
     use std::io::{stdin, stdout, Write};
 
     use id3::{Tag, TagLike};
     use std::path::Path;
 
-    use crate::{track::track::track::Track, track_categorization::genre::genre::is_edm};
+    use crate::{
+        track::track::track::Track,
+        track_categorization::genre::genre::is_edm,
+        track_fingerprinting::track_fingerprinting::track_fingerprinting::{
+            get_track_fingerprints_for_file, Fingerprint,
+        },
+    };
+
+    pub fn relocate_tracks(mixxx_db_path: &str) -> Result<(), Box<dyn std::error::Error>> {
+        let connection = get_connection(&mixxx_db_path);
+
+        let mut stmt = connection.prepare(
+            "SELECT l.id, l.bpm, l.genre, tl.location FROM library l
+             INNER JOIN track_locations tl
+             ON tl.id = l.location
+             WHERE l.bpm IS NOT NULL
+             AND l.bpm > ?1;",
+        )?;
+
+        let rows = stmt.query_map([], |row| {
+            Ok(Track {
+                id: row.get(0)?,
+                bpm: row.get(1)?,
+                genre: row.get(2)?,
+                location: row.get(3)?,
+                id3: None,
+            })
+        })?;
+
+        let mut tracks = Vec::new();
+        for row in rows {
+            tracks.push(row.unwrap());
+        }
+
+        // iterate and collect locations
+        // TODO complete implementation
+        let mut _track_locations: Vec<Vec<Fingerprint>> = tracks
+            .iter()
+            .cloned()
+            .map(|track| track.location)
+            .map(|location| get_track_fingerprints_for_file(&location).unwrap())
+            .collect();
+
+        Ok(())
+    }
 
     pub fn fix_edm_bpm(mixxx_db_path: &str) -> Result<(), Box<dyn std::error::Error>> {
         let edm_tracks_low_bpm = find_edm_tracks_with_low_bpm(&mixxx_db_path)?;
@@ -183,7 +239,7 @@ pub mod mixxxdb {
 
         use rusqlite::Connection;
 
-        use crate::mixxxdb::filter_to_edm_tracks;
+        use crate::mixxx_db::filter_to_edm_tracks;
 
         use super::{filter_to_id3_supported_formats, fix_edm_bpm, Track};
 
