@@ -8,8 +8,18 @@
 		"vscode": {
 			"settings": {},
 			"extensions": [
+				"dustypomerleau.rust-syntax",
+				"eamodio.gitlens",
+				"esbenp.prettier-vscode",
+				"GitHub.vscode-pull-request-github",
+				"njpwerner.autodocstring",
+				"oderwat.indent-rainbow",
 				"rust-lang.rust-analyzer",
-				"streetsidesoftware.code-spell-checker"
+				"serayuzgur.crates",
+				"SonarSource.sonarlint-vscode",
+				"streetsidesoftware.code-spell-checker-german",
+				"streetsidesoftware.code-spell-checker",
+				"tamasfe.even-better-toml"
 			]
 		}
 	},
