@@ -9,7 +9,7 @@ path ="./src/lib/lib.rs"
 
 [dependencies]
 gstreamer = "0.23.3"
-id3 = "1.14.0"
+id3 = "1.15.0"
 rand = "0.8.5"
 regex = "1.11.1"
 rusqlite = "0.31.0"
